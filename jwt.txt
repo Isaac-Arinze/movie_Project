@@ -1,0 +1,10 @@
+Part 1
+
+   -> Add JWT Dependency
+   -> user model -> with "refreshToken" field
+   -> user repo
+   -> ApplicationConfig -> for beans of important interfaces/classes
+   -> JwtService
+   -> RefreshTokenSevice
+   -> AuthFilterService
+
