@@ -4,6 +4,8 @@ import com.zikan.movieAPI.Auth.entities.RefreshToken;
 import com.zikan.movieAPI.Auth.entities.User;
 import com.zikan.movieAPI.Auth.repository.RefreshTokenRepository;
 import com.zikan.movieAPI.Auth.repository.UserRepository;
+import com.zikan.movieAPI.exceptions.RefreshTokenExpiredException;
+import com.zikan.movieAPI.exceptions.RefreshTokenNotFoundException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -46,11 +48,11 @@ public class RefreshTokenService {
 
     public RefreshToken verifyRefreshToken(String refreshToken){
         RefreshToken refToken = refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(()-> new RuntimeException("Refresh token Not found"));
+                .orElseThrow(()-> new RefreshTokenNotFoundException("Refresh token Not found"));
 
         if (refToken.getExpirationTime().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(refToken);
-            throw  new RuntimeException("Refresh Token Expired");
+            throw  new RefreshTokenExpiredException("Refresh Token Expired");
         }
 
         return refToken;

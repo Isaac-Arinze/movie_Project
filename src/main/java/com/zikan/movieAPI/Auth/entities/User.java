@@ -45,6 +45,9 @@ public class User implements UserDetails {
     @Size(min = 5, message = "Password must have a minimum of 5 characters")
     private String password;
 
+    @OneToOne (mappedBy = "user")
+    private ForgotPassword forgotPassword;
+
     @OneToOne(mappedBy = "user")
     private RefreshToken refreshToken;
 
