@@ -4,18 +4,18 @@ import com.zikan.movieAPI.Auth.entities.ForgotPassword;
 import com.zikan.movieAPI.Auth.entities.User;
 import com.zikan.movieAPI.Auth.repository.ForgotPasswordRepository;
 import com.zikan.movieAPI.Auth.repository.UserRepository;
+import com.zikan.movieAPI.Auth.utils.ChangePassword;
 import com.zikan.movieAPI.dto.MailBody;
 import com.zikan.movieAPI.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 
 @RestController
@@ -24,14 +24,19 @@ public class ForgotPasswordController {
 
     private final UserRepository userRepository;
 
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    private ForgotPasswordRepository forgotPasswordRepository;
+    private final ForgotPasswordRepository forgotPasswordRepository;
 
-    public ForgotPasswordController(UserRepository userRepository, EmailService emailService, ForgotPasswordRepository forgotPasswordRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+
+
+    public ForgotPasswordController(UserRepository userRepository, EmailService emailService, ForgotPasswordRepository forgotPasswordRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.forgotPasswordRepository = forgotPasswordRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping ("/verifyMail/{email}")
@@ -79,10 +84,24 @@ public class ForgotPasswordController {
            return new ResponseEntity<>("OTP has expired", HttpStatus.EXPECTATION_FAILED);
        }
        return ResponseEntity.ok("OTP verified");
-
     }
 
+    @PostMapping ("/changePassword/{email}")
+    public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
+                                                        @RequestBody String email
 
+                                                       ){
+        // check if the password matches
+        if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
+            return new ResponseEntity<>("Please ensure password match", HttpStatus.EXPECTATION_FAILED);
+        }
+
+        String encodedPassword = passwordEncoder.encode(changePassword.password());
+        userRepository.updatePassword(email, encodedPassword);
+        return ResponseEntity.ok("Password has bee change successfully");
+
+
+    }
 
     private Integer otpGenerator (){
         Random random = new Random();
