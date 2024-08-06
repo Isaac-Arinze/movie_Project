@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Random;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/forgotPassword")
 public class ForgotPasswordController {
 
     private final UserRepository userRepository;
@@ -57,7 +57,7 @@ public class ForgotPasswordController {
         ForgotPassword forgotPassword = new ForgotPassword().builder()
 
                 .otp(otp)
-                .expirationTime(new Date(System.currentTimeMillis() * 70 * 1000))
+                .expirationTime(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                 .user(user)
                 .build();
 

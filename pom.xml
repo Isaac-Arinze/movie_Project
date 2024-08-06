@@ -67,7 +67,8 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
-			<!-- jjwt for JWT support -->
+
+		<!-- jjwt for JWT support -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>

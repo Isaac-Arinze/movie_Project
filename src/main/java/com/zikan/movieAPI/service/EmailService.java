@@ -1,6 +1,7 @@
 package com.zikan.movieAPI.service;
 
 import com.zikan.movieAPI.dto.MailBody;
+import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class EmailService {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(mailBody.to());
-        message.setFrom("");
+        message.setFrom("skytecomputer@gmail.com");
         message.setSubject(mailBody.subject());
         message.setText(mailBody.text());
 
